@@ -1,0 +1,1089 @@
+{
+  "info": {
+    "_postman_id": "385b9c16-11ed-4979-ab22-a8a9e2c0213c",
+    "name": "RUSUNAWA - API Laravel P9",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run sequentially with local seeded database. Creates a new test account per run, cancels test booking, changes its password, marks demo notifications read. Admin endpoints check student access denial; admin success paths require separate admin testing. Do not run against production. Clear tokens before exporting evidence."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "test_email",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "test_nim",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "test_password",
+      "value": "RusunawaTest123!",
+      "type": "string"
+    },
+    {
+      "key": "booking_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "notification_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "start_date",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "end_date",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Auth and Profile",
+      "item": [
+        {
+          "name": "01 Register valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/register",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Mahasiswa Postman\",\n  \"email\": \"{{test_email}}\",\n  \"nim\": \"{{test_nim}}\",\n  \"study_program\": \"Informatika\",\n  \"password\": \"{{test_password}}\",\n  \"password_confirmation\": \"{{test_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const id = Date.now().toString() + Math.floor(Math.random()*1000).toString();",
+                  "pm.collectionVariables.set(\"test_email\", \"postman\"+id+\"@example.test\");",
+                  "pm.collectionVariables.set(\"test_nim\", \"PM\"+id);",
+                  "pm.collectionVariables.unset(\"token\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Token tersedia\", () => pm.expect(j.data.token).to.be.a(\"string\").and.not.empty);",
+                  "if (pm.response.code < 300 && j.data?.token) pm.collectionVariables.set(\"token\", j.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "02 Login valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/login",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Token tersedia\", () => pm.expect(j.data.token).to.be.a(\"string\").and.not.empty);",
+                  "if (pm.response.code < 300 && j.data?.token) pm.collectionVariables.set(\"token\", j.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "03 Login tidak valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/login",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"{{test_email}}\",\n  \"password\": \"salah-password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Error identifier\", () => pm.expect(j.errors).to.have.property(\"identifier\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "04 Profil tanpa token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/profile",
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "05 Profil dengan token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/profile"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Profil akun benar\", () => pm.expect(j.data.email).to.eql(pm.collectionVariables.get(\"test_email\")));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "02 Rooms",
+      "item": [
+        {
+          "name": "06 Daftar kamar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rooms?per_page=20"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Pagination meta\", () => { pm.expect(j.meta).to.include.keys(\"current_page\",\"last_page\",\"per_page\",\"total\"); pm.expect(j.data).to.be.an(\"array\"); });",
+                  "pm.test(\"Data kamar tersedia\", () => pm.expect(j.data.length).to.be.greaterThan(0));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "07 Detail kamar",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rooms/A101"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"ID kamar benar\", () => pm.expect(j.data.id).to.eql(\"A101\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "08 Kamar tidak ditemukan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rooms/TIDAK-ADA-POSTMAN"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 404\", () => pm.response.to.have.status(404));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "03 Bookings",
+      "item": [
+        {
+          "name": "09 Pemesanan tidak valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 422\", () => pm.response.to.have.status(422));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Error per field\", () => pm.expect(j.errors).to.include.keys(\"room_id\",\"start_date\",\"end_date\",\"purpose\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "10 Pemesanan valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/bookings",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"room_id\": \"A101\",\n  \"start_date\": \"{{start_date}}\",\n  \"end_date\": \"{{end_date}}\",\n  \"purpose\": \"Pengujian Postman\",\n  \"note\": \"Data uji\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const start = new Date(Math.max(Date.now(), Date.UTC(2027,0,1)));",
+                  "start.setUTCDate(start.getUTCDate()+370);",
+                  "const end = new Date(start); end.setUTCDate(end.getUTCDate()+7);",
+                  "pm.collectionVariables.set(\"start_date\",start.toISOString().slice(0,10));",
+                  "pm.collectionVariables.set(\"end_date\",end.toISOString().slice(0,10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Pemesanan tersimpan\", () => { pm.expect(j.data.id).to.be.a(\"string\"); pm.expect(j.data.status).to.eql(\"waiting\"); });",
+                  "if (pm.response.code === 201 && j.data?.id) pm.collectionVariables.set(\"booking_id\", j.data.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "11 Daftar pemesanan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/bookings"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Pagination meta\", () => { pm.expect(j.meta).to.include.keys(\"current_page\",\"last_page\",\"per_page\",\"total\"); pm.expect(j.data).to.be.an(\"array\"); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "12 Detail pemesanan",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/bookings/{{booking_id}}"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"ID pemesanan benar\", () => pm.expect(j.data.id).to.eql(pm.collectionVariables.get(\"booking_id\")));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "13 Batalkan pemesanan",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/bookings/{{booking_id}}/cancel"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Status cancelled\", () => pm.expect(j.data.status).to.eql(\"cancelled\"));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "04 Favorites",
+      "item": [
+        {
+          "name": "14 Tambah favorit",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/favorites",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"room_id\": \"A101\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", () => pm.response.to.have.status(201));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "15 Daftar favorit",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/favorites"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Pagination meta\", () => { pm.expect(j.meta).to.include.keys(\"current_page\",\"last_page\",\"per_page\",\"total\"); pm.expect(j.data).to.be.an(\"array\"); });",
+                  "pm.test(\"Kamar favorit tersimpan\", () => pm.expect(j.data.some(x=>x.id===\"A101\")).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "16 Hapus favorit",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/favorites/A101"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "05 Profile, Authorization and Logout",
+      "item": [
+        {
+          "name": "17 Ubah profil",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/profile",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"081234567890\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Nomor diperbarui\", () => pm.expect(j.data.phone).to.eql(\"081234567890\"));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "18 Ubah password",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/profile/password",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"{{test_password}}\",\n  \"password\": \"RusunawaTest456!\",\n  \"password_confirmation\": \"RusunawaTest456!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "19 Tambah kamar ditolak untuk student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rooms",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 403\", () => pm.response.to.have.status(403));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "20 Ubah kamar ditolak untuk student",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rooms/A101",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 403\", () => pm.response.to.have.status(403));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "21 Hapus kamar ditolak untuk student",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/rooms/A101"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 403\", () => pm.response.to.have.status(403));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "22 Logout akun baru",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "23 Token setelah logout ditolak",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/profile"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 401\", () => pm.response.to.have.status(401));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"error\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "06 Notifications",
+      "item": [
+        {
+          "name": "24 Login akun seeder untuk notifikasi",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/login",
+            "auth": {
+              "type": "noauth"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"student1@example.test\",\n  \"password\": \"RusunawaDemo123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Token tersedia\", () => pm.expect(j.data.token).to.be.a(\"string\").and.not.empty);",
+                  "if (pm.response.code < 300 && j.data?.token) pm.collectionVariables.set(\"token\", j.data.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "25 Daftar notifikasi",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/notifications"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Pagination meta\", () => { pm.expect(j.meta).to.include.keys(\"current_page\",\"last_page\",\"per_page\",\"total\"); pm.expect(j.data).to.be.an(\"array\"); });",
+                  "pm.test(\"Notifikasi tersedia\", () => pm.expect(j.data.length).to.be.greaterThan(0));",
+                  "if (j.data?.length) pm.collectionVariables.set(\"notification_id\",j.data[0].id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "26 Baca notifikasi",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/notifications/{{notification_id}}/read"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.test(\"Notifikasi sudah dibaca\", () => pm.expect(j.data.is_read).to.eql(true));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "27 Baca semua notifikasi",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/notifications/read-all"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "28 Logout akun seeder",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/logout"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", () => pm.response.to.have.status(200));",
+                  "const j = pm.response.json();",
+                  "pm.test(\"Format respons standar\", () => { pm.expect(j).to.include.keys(\"status\", \"message\", \"data\"); pm.expect(j.status).to.eql(\"success\"); });",
+                  "function sensitive(x) { return x && typeof x === \"object\" && Object.keys(x).some(k => [\"password\",\"remember_token\",\"password_confirmation\"].includes(k) || sensitive(x[k])); }",
+                  "pm.test(\"Tidak membocorkan data sensitif\", () => pm.expect(!!sensitive(j.data)).to.eql(false));",
+                  "pm.collectionVariables.unset(\"token\");"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
