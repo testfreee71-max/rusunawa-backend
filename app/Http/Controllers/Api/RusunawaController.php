@@ -248,6 +248,25 @@ class RusunawaController extends Controller {
         }
     }
 
+    private function ensureRoomCapacity(Room $room,array $v): void {
+        $active=Booking::where('room_id',$room->id)
+            ->whereIn('status',[
+                'waiting',
+                'processing',
+                'approved'
+            ])
+            ->where('start_date','<',$v['end_date'])
+            ->where('end_date','>',$v['start_date']);
+
+        if ($active->count()>=$room->capacity) {
+            throw ValidationException::withMessages([
+                'room_id'=>[
+                    'Kapasitas kamar penuh pada periode tersebut.'
+                ]
+            ]);
+        }
+    }
+
     // BUG-02 FIX: Mencegah double booking lintas kamar.
     public function createBooking(BookingRequest $r) {
         $v=$r->validated();
@@ -265,23 +284,7 @@ class RusunawaController extends Controller {
 
             $this->ensureNoOverlappingBooking($r->user()->id,$v);
 
-            // Periksa kapasitas kamar yang dipilih.
-            $active=Booking::where('room_id',$room->id)
-                ->whereIn('status',[
-                    'waiting',
-                    'processing',
-                    'approved'
-                ])
-                ->where('start_date','<',$v['end_date'])
-                ->where('end_date','>',$v['start_date']);
-
-            if ($active->count()>=$room->capacity) {
-                throw ValidationException::withMessages([
-                    'room_id'=>[
-                        'Kapasitas kamar penuh pada periode tersebut.'
-                    ]
-                ]);
-            }
+            $this->ensureRoomCapacity($room,$v);
 
             return $r->user()->bookings()->create(
                 $v+[
