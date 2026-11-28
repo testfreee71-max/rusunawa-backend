@@ -97,6 +97,7 @@ class RusunawaController extends Controller {
         return $this->ok('Password diperbarui');
     }
 
+    // P13: Advanced Room Filter & Sort
     public function rooms(RoomListRequest $r) {
         $q=$this->roomsFor($r->user());
 
@@ -116,6 +117,26 @@ class RusunawaController extends Controller {
         if ($r->has('available') && $r->input('available')!==null) {
             $q->where('available',$r->boolean('available'));
         }
+
+        if ($r->filled('building')) {
+            $q->where('building',$r->input('building'));
+        }
+
+        if ($r->filled('min_capacity')) {
+            $q->where(
+                'capacity',
+                '>=',
+                (int)$r->input('min_capacity')
+            );
+        }
+
+        match ($r->input('sort')) {
+            'capacity_asc' => $q->orderBy('capacity','asc'),
+            'capacity_desc' => $q->orderBy('capacity','desc'),
+            'available_from_asc' => $q->orderBy('available_from','asc'),
+            'available_from_desc' => $q->orderBy('available_from','desc'),
+            default => null,
+        };
 
         return $this->paged(
             $q->orderBy('id'),
