@@ -1,0 +1,288 @@
+newman
+
+RUSUNAWA - API Laravel P9
+
+□ 01 Auth and Profile
+└ 01 Register valid
+  POST http://127.0.0.1:8000/api/register [201 Created, 617B, 6.2s]
+  √  HTTP 201
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Token tersedia
+
+└ 02 Login valid
+  POST http://127.0.0.1:8000/api/login [200 OK, 612B, 1187ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Token tersedia
+
+└ 03 Login tidak valid
+  POST http://127.0.0.1:8000/api/login [422 Unprocessable Content, 407B, 1147ms]
+  √  HTTP 422
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Error identifier
+
+└ 04 Profil tanpa token
+  GET http://127.0.0.1:8000/api/profile [401 Unauthorized, 309B, 579ms]
+  √  HTTP 401
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 05 Profil dengan token
+  GET http://127.0.0.1:8000/api/profile [200 OK, 493B, 774ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Profil akun benar
+
+□ 02 Rooms
+└ 06 Daftar kamar
+  GET http://127.0.0.1:8000/api/rooms?per_page=20 [200 OK, 3.82kB, 1067ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Pagination meta
+  √  Data kamar tersedia
+
+└ 07 Detail kamar
+  GET http://127.0.0.1:8000/api/rooms/A101 [200 OK, 853B, 551ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  ID kamar benar
+
+└ 08 Kamar tidak ditemukan
+  GET http://127.0.0.1:8000/api/rooms/TIDAK-ADA-POSTMAN [404 Not Found, 292B, 703ms]
+  √  HTTP 404
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+□ 03 Bookings
+└ 09 Pemesanan tidak valid
+  POST http://127.0.0.1:8000/api/bookings [422 Unprocessable Content, 497B, 670ms]
+  √  HTTP 422
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Error per field
+
+└ 10 Pemesanan valid
+  POST http://127.0.0.1:8000/api/bookings [201 Created, 1.06kB, 864ms]
+  √  HTTP 201
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Pemesanan tersimpan
+
+└ 11 Daftar pemesanan
+  GET http://127.0.0.1:8000/api/bookings [200 OK, 1.12kB, 581ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Pagination meta
+
+└ 12 Detail pemesanan
+  GET http://127.0.0.1:8000/api/bookings/8 [200 OK, 1.05kB, 558ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  ID pemesanan benar
+
+└ 13 Batalkan pemesanan
+  PATCH http://127.0.0.1:8000/api/bookings/8/cancel [200 OK, 1.06kB, 572ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Status cancelled
+
+□ 04 Favorites
+└ 14 Tambah favorit
+  POST http://127.0.0.1:8000/api/favorites [201 Created, 861B, 605ms]
+  √  HTTP 201
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 15 Daftar favorit
+  GET http://127.0.0.1:8000/api/favorites [200 OK, 920B, 564ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Pagination meta
+  √  Kamar favorit tersimpan
+
+└ 16 Hapus favorit
+  DELETE http://127.0.0.1:8000/api/favorites/A101 [200 OK, 281B, 568ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+□ 05 Profile, Authorization and Logout
+└ 17 Ubah profil
+  PUT http://127.0.0.1:8000/api/profile [200 OK, 505B, 764ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Nomor diperbarui
+
+└ 18 Ubah password
+  PUT http://127.0.0.1:8000/api/profile/password [200 OK, 285B, 1564ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 19 Tambah kamar ditolak untuk student
+  POST http://127.0.0.1:8000/api/rooms [403 Forbidden, 285B, 656ms]
+  √  HTTP 403
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 20 Ubah kamar ditolak untuk student
+  PUT http://127.0.0.1:8000/api/rooms/A101 [403 Forbidden, 285B, 567ms]
+  √  HTTP 403
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 21 Hapus kamar ditolak untuk student
+  DELETE http://127.0.0.1:8000/api/rooms/A101 [403 Forbidden, 285B, 550ms]
+  √  HTTP 403
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 22 Logout akun baru
+  POST http://127.0.0.1:8000/api/logout [200 OK, 281B, 539ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 23 Token setelah logout ditolak
+  GET http://127.0.0.1:8000/api/profile [401 Unauthorized, 309B, 525ms]
+  √  HTTP 401
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+□ 06 Notifications
+└ 24 Login akun seeder untuk notifikasi
+  POST http://127.0.0.1:8000/api/login [422 Unprocessable Content, 407B, 1038ms]
+  1. HTTP 200
+  2. Format respons standar
+  √  Tidak membocorkan data sensitif
+  3. Token tersedia
+
+└ 25 Daftar notifikasi
+  GET http://127.0.0.1:8000/api/notifications [401 Unauthorized, 309B, 513ms]
+  4. HTTP 200
+  5. Format respons standar
+  √  Tidak membocorkan data sensitif
+  6. Pagination meta
+  7. Notifikasi tersedia
+
+└ 26 Baca notifikasi
+  PATCH http://127.0.0.1:8000/api/notifications//read [404 Not Found, 292B, 456ms]
+  8. HTTP 200
+  9. Format respons standar
+  √  Tidak membocorkan data sensitif
+ 10. Notifikasi sudah dibaca
+
+└ 27 Baca semua notifikasi
+  PATCH http://127.0.0.1:8000/api/notifications/read-all [401 Unauthorized, 309B, 532ms]
+ 11. HTTP 200
+ 12. Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 28 Logout akun seeder
+  POST http://127.0.0.1:8000/api/logout [401 Unauthorized, 309B, 520ms]
+ 13. HTTP 200
+ 14. Format respons standar
+  √  Tidak membocorkan data sensitif
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                  28 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                  28 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   2 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                 103 │                 14 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 27.9s                                          │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 11.58kB (approx)                              │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 909ms [min: 456ms, max: 6.2s, s.d.: 1061ms] │
+└────────────────────────────────────────────────────────────────────┘
+
+[31m   # [39m[31m failure        [39m[31m detail                                                            [39m
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 01.  AssertionError  HTTP 200                                                          
+                      expected response to have status code 200 but got 422             
+                      at assertion:0 in test-script                                     
+                      inside "06 Notifications / 24 Login akun seeder untuk notifikasi" 
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 02.  AssertionError  Format respons standar                                            
+                      expected 'error' to deeply equal 'success'                        
+                      at assertion:1 in test-script                                     
+                      inside "06 Notifications / 24 Login akun seeder untuk notifikasi" 
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 03.  TypeError       Token tersedia                                                    
+                      Cannot read properties of null (reading 'token')                  
+                      at assertion:3 in test-script                                     
+                      inside "06 Notifications / 24 Login akun seeder untuk notifikasi" 
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 04.  AssertionError  HTTP 200                                                          
+                      expected response to have status code 200 but got 401             
+                      at assertion:0 in test-script                                     
+                      inside "06 Notifications / 25 Daftar notifikasi"                  
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 05.  AssertionError  Format respons standar                                            
+                      expected 'error' to deeply equal 'success'                        
+                      at assertion:1 in test-script                                     
+                      inside "06 Notifications / 25 Daftar notifikasi"                  
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 06.  TypeError       Pagination meta                                                   
+                      Cannot convert undefined or null to object                        
+                      at assertion:3 in test-script                                     
+                      inside "06 Notifications / 25 Daftar notifikasi"                  
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 07.  TypeError       Notifikasi tersedia                                               
+                      Cannot read properties of null (reading 'length')                 
+                      at assertion:4 in test-script                                     
+                      inside "06 Notifications / 25 Daftar notifikasi"                  
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 08.  AssertionError  HTTP 200                                                          
+                      expected response to have status code 200 but got 404             
+                      at assertion:0 in test-script                                     
+                      inside "06 Notifications / 26 Baca notifikasi"                    
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 09.  AssertionError  Format respons standar                                            
+                      expected 'error' to deeply equal 'success'                        
+                      at assertion:1 in test-script                                     
+                      inside "06 Notifications / 26 Baca notifikasi"                    
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 10.  TypeError       Notifikasi sudah dibaca                                           
+                      Cannot read properties of null (reading 'is_read')                
+                      at assertion:3 in test-script                                     
+                      inside "06 Notifications / 26 Baca notifikasi"                    
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 11.  AssertionError  HTTP 200                                                          
+                      expected response to have status code 200 but got 401             
+                      at assertion:0 in test-script                                     
+                      inside "06 Notifications / 27 Baca semua notifikasi"              
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 12.  AssertionError  Format respons standar                                            
+                      expected 'error' to deeply equal 'success'                        
+                      at assertion:1 in test-script                                     
+                      inside "06 Notifications / 27 Baca semua notifikasi"              
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 13.  AssertionError  HTTP 200                                                          
+                      expected response to have status code 200 but got 401             
+                      at assertion:0 in test-script                                     
+                      inside "06 Notifications / 28 Logout akun seeder"                 
+[90m     [39m[90m                [39m[90m                                                                   [39m
+ 14.  AssertionError  Format respons standar                                            
+                      expected 'error' to deeply equal 'success'                        
+                      at assertion:1 in test-script                                     
+                      inside "06 Notifications / 28 Logout akun seeder"                 

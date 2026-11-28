@@ -1,0 +1,58 @@
+newman
+
+RUSUNAWA - API Laravel P9
+
+□ 06 Notifications
+└ 24 Login akun seeder untuk notifikasi
+  POST http://127.0.0.1:8000/api/login [200 OK, 593B, 1363ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Token tersedia
+
+└ 25 Daftar notifikasi
+  GET http://127.0.0.1:8000/api/notifications [200 OK, 509B, 645ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Pagination meta
+  √  Notifikasi tersedia
+
+└ 26 Baca notifikasi
+  PATCH http://127.0.0.1:8000/api/notifications/1/read [200 OK, 443B, 545ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+  √  Notifikasi sudah dibaca
+
+└ 27 Baca semua notifikasi
+  PATCH http://127.0.0.1:8000/api/notifications/read-all [200 OK, 289B, 548ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+└ 28 Logout akun seeder
+  POST http://127.0.0.1:8000/api/logout [200 OK, 281B, 586ms]
+  √  HTTP 200
+  √  Format respons standar
+  √  Tidak membocorkan data sensitif
+
+┌─────────────────────────┬─────────────────────┬─────────────────────┐
+│                         │            executed │              failed │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│              iterations │                   1 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│                requests │                   5 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│            test-scripts │                   5 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│      prerequest-scripts │                   0 │                   0 │
+├─────────────────────────┼─────────────────────┼─────────────────────┤
+│              assertions │                  19 │                   0 │
+├─────────────────────────┴─────────────────────┴─────────────────────┤
+│ total run duration: 4.1s                                            │
+├─────────────────────────────────────────────────────────────────────┤
+│ total data received: 961B (approx)                                  │
+├─────────────────────────────────────────────────────────────────────┤
+│ average response time: 737ms [min: 545ms, max: 1363ms, s.d.: 314ms] │
+└─────────────────────────────────────────────────────────────────────┘

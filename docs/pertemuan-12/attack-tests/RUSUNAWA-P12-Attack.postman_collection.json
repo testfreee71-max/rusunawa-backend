@@ -1,0 +1,338 @@
+{
+  "info": {
+    "name": "RUSUNAWA P12 Security Attack Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api"
+    },
+    {
+      "key": "expired_token",
+      "value": ""
+    },
+    {
+      "key": "student_password",
+      "value": ""
+    },
+    {
+      "key": "admin_password",
+      "value": ""
+    },
+    {
+      "key": "student_token",
+      "value": ""
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "rate_count",
+      "value": "0"
+    },
+    {
+      "key": "rate_blocked",
+      "value": "0"
+    },
+    {
+      "key": "rate_accepted",
+      "value": "0"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 Expired token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/profile",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{expired_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 No token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/profile",
+        "auth": {
+          "type": "noauth"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 401\", function () { pm.response.to.have.status(401); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 Student login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/login",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"identifier\": \"student1@example.test\", \"password\": \"{{student_password}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.collectionVariables.set(\"student_token\", pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 Student forbidden",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/rooms/A101",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 403\", function () { pm.response.to.have.status(403); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 Student logout",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/logout",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{student_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 Admin login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/login",
+        "auth": {
+          "type": "noauth"
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"identifier\": \"admin.p12@example.test\", \"password\": \"{{admin_password}}\"}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.collectionVariables.set(\"admin_token\", pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 Oversized room input",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/rooms",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{admin_token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"id\": \"P12-OVERSIZE\", \"name\": \"Security test\", \"building\": \"Test\", \"floor\": 1, \"images\": [\"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\", \"https://example.test/room.jpg\"], \"gender\": \"Putra\", \"capacity\": 1, \"size\": \"3 x 3 m\", \"available_from\": \"2027-01-01\", \"description\": \"Local test\", \"facilities\": [\"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\", \"WiFi\"], \"available\": true}"
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 422\", function () { pm.response.to.have.status(422); });",
+              "pm.test(\"Both arrays rejected\", function () { const e=pm.response.json().errors; pm.expect(e).to.have.property(\"images\"); pm.expect(e).to.have.property(\"facilities\"); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 Rate limit probe",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{base_url}}/profile",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{admin_token}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const status = pm.response.code;",
+              "const n = Number(pm.collectionVariables.get(\"rate_count\") || 0)+1;",
+              "const blocked = Number(pm.collectionVariables.get(\"rate_blocked\") || 0)+(status===429?1:0);",
+              "const accepted = Number(pm.collectionVariables.get(\"rate_accepted\") || 0)+(status===200?1:0);",
+              "pm.collectionVariables.set(\"rate_count\",n); pm.collectionVariables.set(\"rate_blocked\",blocked); pm.collectionVariables.set(\"rate_accepted\",accepted);",
+              "pm.test(\"HTTP 200 or 429\",()=>pm.expect([200,429]).to.include(status));",
+              "if(n<65){pm.execution.setNextRequest(pm.info.requestId);} else {pm.test(\"Rate limit enforced\",()=>{pm.expect(blocked).to.be.above(0);pm.expect(accepted).to.be.above(0);}); console.log(\"Rate accepted: \"+accepted+\"; blocked: \"+blocked);pm.execution.setNextRequest(null);}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
