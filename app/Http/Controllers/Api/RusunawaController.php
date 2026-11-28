@@ -215,6 +215,19 @@ class RusunawaController extends Controller {
         );
     }
 
+    private function ensureRoomAvailable(Room $room,array $v): void {
+        if (
+            !$room->available ||
+            $v['start_date']<$room->available_from->toDateString()
+        ) {
+            throw ValidationException::withMessages([
+                'room_id'=>[
+                    'Kamar tidak tersedia pada tanggal tersebut.'
+                ]
+            ]);
+        }
+    }
+
     // BUG-02 FIX: Mencegah double booking lintas kamar.
     public function createBooking(BookingRequest $r) {
         $v=$r->validated();
@@ -228,17 +241,7 @@ class RusunawaController extends Controller {
             $room=Room::lockForUpdate()
                 ->findOrFail($v['room_id']);
 
-            // Validasi ketersediaan kamar.
-            if (
-                !$room->available ||
-                $v['start_date']<$room->available_from->toDateString()
-            ) {
-                throw ValidationException::withMessages([
-                    'room_id'=>[
-                        'Kamar tidak tersedia pada tanggal tersebut.'
-                    ]
-                ]);
-            }
+            $this->ensureRoomAvailable($room,$v);
 
             // FIX PERTEMUAN 11:
             // Periksa seluruh pemesanan aktif pengguna,
