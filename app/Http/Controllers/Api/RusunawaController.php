@@ -228,6 +228,26 @@ class RusunawaController extends Controller {
         }
     }
 
+    private function ensureNoOverlappingBooking($userId,array $v): void {
+        $overlap=Booking::where('user_id',$userId)
+            ->whereIn('status',[
+                'waiting',
+                'processing',
+                'approved'
+            ])
+            ->where('start_date','<',$v['end_date'])
+            ->where('end_date','>',$v['start_date'])
+            ->exists();
+
+        if ($overlap) {
+            throw ValidationException::withMessages([
+                'start_date'=>[
+                    'Anda sudah memiliki pemesanan pada periode tersebut.'
+                ]
+            ]);
+        }
+    }
+
     // BUG-02 FIX: Mencegah double booking lintas kamar.
     public function createBooking(BookingRequest $r) {
         $v=$r->validated();
@@ -243,26 +263,7 @@ class RusunawaController extends Controller {
 
             $this->ensureRoomAvailable($room,$v);
 
-            // FIX PERTEMUAN 11:
-            // Periksa seluruh pemesanan aktif pengguna,
-            // bukan hanya pemesanan pada kamar yang sama.
-            $overlap=Booking::where('user_id',$r->user()->id)
-                ->whereIn('status',[
-                    'waiting',
-                    'processing',
-                    'approved'
-                ])
-                ->where('start_date','<',$v['end_date'])
-                ->where('end_date','>',$v['start_date'])
-                ->exists();
-
-            if ($overlap) {
-                throw ValidationException::withMessages([
-                    'start_date'=>[
-                        'Anda sudah memiliki pemesanan pada periode tersebut.'
-                    ]
-                ]);
-            }
+            $this->ensureNoOverlappingBooking($r->user()->id,$v);
 
             // Periksa kapasitas kamar yang dipilih.
             $active=Booking::where('room_id',$room->id)
