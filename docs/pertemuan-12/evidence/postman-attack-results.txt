@@ -1,0 +1,444 @@
+newman
+
+RUSUNAWA P12 Security Attack Tests
+
+→ 01 Expired token
+  GET http://127.0.0.1:8000/api/profile [401 Unauthorized, 309B, 796ms]
+  √  HTTP 401
+
+→ 02 No token
+  GET http://127.0.0.1:8000/api/profile [401 Unauthorized, 309B, 484ms]
+  √  HTTP 401
+
+→ 03 Student login
+  POST http://127.0.0.1:8000/api/login [200 OK, 593B, 1090ms]
+  √  HTTP 200
+
+→ 04 Student forbidden
+  PUT http://127.0.0.1:8000/api/rooms/A101 [403 Forbidden, 335B, 614ms]
+  √  HTTP 403
+
+→ 05 Student logout
+  POST http://127.0.0.1:8000/api/logout [200 OK, 331B, 578ms]
+  √  HTTP 200
+
+→ 06 Admin login
+  POST http://127.0.0.1:8000/api/login [200 OK, 588B, 1102ms]
+  √  HTTP 200
+
+→ 07 Oversized room input
+  POST http://127.0.0.1:8000/api/rooms [422 Unprocessable Content, 495B, 660ms]
+  √  HTTP 422
+  √  Both arrays rejected
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 583ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 577ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 557ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 575ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 557ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 576ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 563ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 571ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 575ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 561ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 578ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 574ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 578ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 570ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 573ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 546ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 587ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 548ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 544ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 563ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 572ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 564ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 596ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 540ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 549ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 576ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 576ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 576ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 591ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 599ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 583ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 600ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 596ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 572ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 601ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 595ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 582ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 583ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 578ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 570ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 610ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 569ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 549ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 565ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 550ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 594ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 568ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 566ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 519B, 579ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 582ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 555ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 571ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 562ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 552ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 588ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 584ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 548ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 587ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [200 OK, 518B, 566ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [429 Too Many Requests, 402B, 575ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [429 Too Many Requests, 402B, 589ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [429 Too Many Requests, 402B, 547ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [429 Too Many Requests, 402B, 538ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [429 Too Many Requests, 402B, 547ms]
+  √  HTTP 200 or 429
+
+Attempting to set next request to 694a521b-08f2-491e-abaa-eadd6b5871e6
+
+→ 08 Rate limit probe
+  GET http://127.0.0.1:8000/api/profile [429 Too Many Requests, 402B, 557ms]
+  √  HTTP 200 or 429
+  √  Rate limit enforced
+  ┌
+  │ 'Rate accepted: 59; blocked: 6'
+  └
+
+┌─────────────────────────┬─────────────────────┬────────────────────┐
+│                         │            executed │             failed │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              iterations │                   1 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│                requests │                  72 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│            test-scripts │                  72 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│      prerequest-scripts │                   0 │                  0 │
+├─────────────────────────┼─────────────────────┼────────────────────┤
+│              assertions │                  74 │                  0 │
+├─────────────────────────┴─────────────────────┴────────────────────┤
+│ total run duration: 48.5s                                          │
+├────────────────────────────────────────────────────────────────────┤
+│ total data received: 16.17kB (approx)                              │
+├────────────────────────────────────────────────────────────────────┤
+│ average response time: 589ms [min: 484ms, max: 1102ms, s.d.: 92ms] │
+└────────────────────────────────────────────────────────────────────┘

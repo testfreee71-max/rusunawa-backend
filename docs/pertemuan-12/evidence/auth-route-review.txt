@@ -1,0 +1,67 @@
+
+  GET|HEAD  api/bookings ................................................................................................... Api\RusunawaController@bookings
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  POST      api/bookings .............................................................................................. Api\RusunawaController@createBooking
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  GET|HEAD  api/bookings/{id} ............................................................................................... Api\RusunawaController@booking
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  PATCH     api/bookings/{id}/cancel .................................................................................. Api\RusunawaController@cancelBooking
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  GET|HEAD  api/favorites ................................................................................................. Api\RusunawaController@favorites
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  POST      api/favorites ............................................................................................... Api\RusunawaController@addFavorite
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  DELETE    api/favorites/{id} ....................................................................................... Api\RusunawaController@removeFavorite
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  POST      api/login ......................................................................................................... Api\RusunawaController@login
+            ⇂ Illuminate\Routing\Middleware\ThrottleRequests:10,1
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  POST      api/logout ....................................................................................................... Api\RusunawaController@logout
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  GET|HEAD  api/notifications ......................................................................................... Api\RusunawaController@notifications
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  PATCH     api/notifications/read-all ...................................................................................... Api\RusunawaController@readAll
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  PATCH     api/notifications/{id}/read ............................................................................ Api\RusunawaController@readNotification
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  GET|HEAD  api/profile ..................................................................................................... Api\RusunawaController@profile
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  PUT       api/profile ............................................................................................... Api\RusunawaController@updateProfile
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  PUT       api/profile/password ........................................................................................... Api\RusunawaController@password
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  POST      api/register ................................................................................................... Api\RusunawaController@register
+            ⇂ Illuminate\Routing\Middleware\ThrottleRequests:10,1
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  GET|HEAD  api/rooms ......................................................................................................... Api\RusunawaController@rooms
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  POST      api/rooms .................................................................................................... Api\RusunawaController@createRoom
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  GET|HEAD  api/rooms/{id} ..................................................................................................... Api\RusunawaController@room
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  PUT       api/rooms/{id} ............................................................................................... Api\RusunawaController@updateRoom
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+  DELETE    api/rooms/{id} ............................................................................................... Api\RusunawaController@deleteRoom
+            ⇂ Illuminate\Auth\Middleware\Authenticate:sanctum
+            ⇂ Illuminate\Routing\Middleware\SubstituteBindings
+
+                                                                                                                                         Showing [21] routes
+

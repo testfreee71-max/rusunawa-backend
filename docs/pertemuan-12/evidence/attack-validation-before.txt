@@ -1,0 +1,4 @@
+array:2 [
+  "validation_passed" => true
+  "errors" => []
+] // vendor\psy\psysh\src\ExecutionClosure.php(41) : eval()'d code:2

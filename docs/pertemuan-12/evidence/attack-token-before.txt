@@ -1,0 +1,1 @@
+Token age: 48 hours - HTTP 200 - Expiration disabled 
