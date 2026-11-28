@@ -215,6 +215,58 @@ class RusunawaController extends Controller {
         );
     }
 
+    private function ensureRoomAvailable(Room $room,array $v): void {
+        if (
+            !$room->available ||
+            $v['start_date']<$room->available_from->toDateString()
+        ) {
+            throw ValidationException::withMessages([
+                'room_id'=>[
+                    'Kamar tidak tersedia pada tanggal tersebut.'
+                ]
+            ]);
+        }
+    }
+
+    private function ensureNoOverlappingBooking($userId,array $v): void {
+        $overlap=Booking::where('user_id',$userId)
+            ->whereIn('status',[
+                'waiting',
+                'processing',
+                'approved'
+            ])
+            ->where('start_date','<',$v['end_date'])
+            ->where('end_date','>',$v['start_date'])
+            ->exists();
+
+        if ($overlap) {
+            throw ValidationException::withMessages([
+                'start_date'=>[
+                    'Anda sudah memiliki pemesanan pada periode tersebut.'
+                ]
+            ]);
+        }
+    }
+
+    private function ensureRoomCapacity(Room $room,array $v): void {
+        $active=Booking::where('room_id',$room->id)
+            ->whereIn('status',[
+                'waiting',
+                'processing',
+                'approved'
+            ])
+            ->where('start_date','<',$v['end_date'])
+            ->where('end_date','>',$v['start_date']);
+
+        if ($active->count()>=$room->capacity) {
+            throw ValidationException::withMessages([
+                'room_id'=>[
+                    'Kapasitas kamar penuh pada periode tersebut.'
+                ]
+            ]);
+        }
+    }
+
     // BUG-02 FIX: Mencegah double booking lintas kamar.
     public function createBooking(BookingRequest $r) {
         $v=$r->validated();
@@ -228,56 +280,11 @@ class RusunawaController extends Controller {
             $room=Room::lockForUpdate()
                 ->findOrFail($v['room_id']);
 
-            // Validasi ketersediaan kamar.
-            if (
-                !$room->available ||
-                $v['start_date']<$room->available_from->toDateString()
-            ) {
-                throw ValidationException::withMessages([
-                    'room_id'=>[
-                        'Kamar tidak tersedia pada tanggal tersebut.'
-                    ]
-                ]);
-            }
+            $this->ensureRoomAvailable($room,$v);
 
-            // FIX PERTEMUAN 11:
-            // Periksa seluruh pemesanan aktif pengguna,
-            // bukan hanya pemesanan pada kamar yang sama.
-            $overlap=Booking::where('user_id',$r->user()->id)
-                ->whereIn('status',[
-                    'waiting',
-                    'processing',
-                    'approved'
-                ])
-                ->where('start_date','<',$v['end_date'])
-                ->where('end_date','>',$v['start_date'])
-                ->exists();
+            $this->ensureNoOverlappingBooking($r->user()->id,$v);
 
-            if ($overlap) {
-                throw ValidationException::withMessages([
-                    'start_date'=>[
-                        'Anda sudah memiliki pemesanan pada periode tersebut.'
-                    ]
-                ]);
-            }
-
-            // Periksa kapasitas kamar yang dipilih.
-            $active=Booking::where('room_id',$room->id)
-                ->whereIn('status',[
-                    'waiting',
-                    'processing',
-                    'approved'
-                ])
-                ->where('start_date','<',$v['end_date'])
-                ->where('end_date','>',$v['start_date']);
-
-            if ($active->count()>=$room->capacity) {
-                throw ValidationException::withMessages([
-                    'room_id'=>[
-                        'Kapasitas kamar penuh pada periode tersebut.'
-                    ]
-                ]);
-            }
+            $this->ensureRoomCapacity($room,$v);
 
             return $r->user()->bookings()->create(
                 $v+[
